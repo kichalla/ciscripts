@@ -19,7 +19,7 @@ sudo apt-get install libunwind8
 sudo apt-get install openjdk-7-jre-headless unzip
 
 # Download build agent from http://aspnetci and update the agent name
-(cd ~/; wget http://aspnetci/update/buildAgent.zip)
+(cd ~/; cp smb://kichallamain.redmond.corp.microsoft.com/UbuntuShare/buildAgent.zip buildAgent.zip)
 (sudo mkdir TeamCity; cd TeamCity)
 sudo unzip ~/buildAgent.zip
 (cd bin; sudo chmod +x agent.sh)
