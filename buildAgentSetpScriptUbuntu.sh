@@ -2,7 +2,7 @@
 
 # NOTE: This script must be run with an account having 'sudo' privileges
 
-if [ $# -ne 2 ] 
+if [ $# -ne 2 ]; then
     echo "Invalid number of arguments specified."
     echo "Usage: <script-name> <agent-name> <agent-url>"
     echo "Examples:"
