@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# NOTE: This script must be run with an account having 'sudo' privileges
+
+if [ $# -ne 2 ] 
+    echo "Invalid number of arguments specified."
+    echo "Usage: <script-name> <agent-name> <agent-url>"
+    echo "Examples:"
+    echo "<script-name> 'aspnetci-b01' 'http://aspnetci/'"
+    exit 1
+fi
+
 apt-get update
 
 echo "Installing Git..."
@@ -22,6 +32,7 @@ apt-get install -y openjdk-7-jre-headless unzip
 
 echo "Installing Nodejs..."
 apt-get install -y nodejs
+ln -s /usr/bin/nodejs /usr/bin/node
 
 echo "Installing NPM..."
 apt-get install -y npm
