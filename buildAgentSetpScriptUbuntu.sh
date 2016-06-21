@@ -72,7 +72,7 @@ cd ~/TeamCity
 cat <<EOF >> agentStartStop
 #!/usr/bin/env bash
  
-case "$1" in
+case "\$1" in
 start)
  sudo ~/TeamCity/bin/agent.sh start
 ;;
