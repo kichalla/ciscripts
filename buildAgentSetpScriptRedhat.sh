@@ -44,6 +44,7 @@ yum -y install npm
 
 echo "Installing Bower globally..."
 npm install -g bower
+echo '{ "allow_root": true }' > /root/.bowerrc # workaround for bower install errors when using with sudo
 
 echo "Installing Grunt globally..."
 npm install -g grunt
