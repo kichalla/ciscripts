@@ -10,6 +10,10 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
+USER="aspnetagent"
+AGENTNAME=$1
+SERVERURL=$2
+
 apt-get update
 
 echo "Installing Git..."
@@ -61,8 +65,8 @@ cd ../conf
 cp buildAgent.dist.properties buildAgent.properties
 
 # Set the build agent name and CI server urls
-sed -i "s/name=.*/name=$1/" buildAgent.properties
-sed -i "s#serverUrl=.*#serverUrl=$2#g" buildAgent.properties
+sed -i "s/name=.*/name=$AGENTNAME/" buildAgent.properties
+sed -i "s#serverUrl=.*#serverUrl=$SERVERURL#g" buildAgent.properties
 
 echo >> buildAgent.properties # append a new line
 echo "system.aspnet.os.name=ubuntu" >> buildAgent.properties
@@ -71,13 +75,14 @@ cd ~/TeamCity
 
 cat <<EOF >> agentStartStop
 #!/usr/bin/env bash
- 
+USER="aspnetagent"
+
 case "\$1" in
 start)
- sudo ~/TeamCity/bin/agent.sh start
+ su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh start"
 ;;
 stop)
- sudo ~/TeamCity/bin/agent.sh stop
+ su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh stop"
 ;;
 *)
   echo "usage start/stop"
@@ -94,4 +99,4 @@ cp agentStartStop /etc/init.d/
 update-rc.d agentStartStop defaults
 
 echo "Starting the build agent..."
-~/TeamCity/bin/agent.sh start
+su $USER -c "~/TeamCity/bin/agent.sh start""
