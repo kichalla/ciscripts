@@ -2,16 +2,17 @@
 
 # NOTE: This script must be run with an account having 'sudo' privileges
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
     echo "Invalid number of arguments specified."
-    echo "Usage: <script-name> <agent-name> <agent-url>"
+    echo "Usage: <script-name> <agent-name> <agent-url> <aspnet-os-name>"
     echo "Examples:"
-    echo "<script-name> 'aspnetci-b01' 'http://aspnetci/'"
+    echo "<script-name> 'aspnetci-b01' 'http://aspnetci/' 'ubuntu'"
     exit 1
 fi
 
 AGENTNAME=$1
 SERVERURL=$2
+ASPNETOSNAME=$3
 
 yum check-update
 
@@ -36,8 +37,10 @@ yum install -y libunwind
 echo "Installing Java..."
 yum install -y java-1.7.0-openjdk 
 
-echo "Installing NodeJs..."
+echo "Installing Node.js..."
+curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -
 yum -y install nodejs
+ln -s /usr/bin/nodejs /usr/bin/node
 
 echo "Installing NPM..."
 yum -y install npm
@@ -57,20 +60,19 @@ npm install -g typescript
 
 echo "Installing Nginx..."
 yum install -y nginx
-systemctl start nginx #start nginx
-systemctl enable nginx #enable Nginx to start when your system boots
+systemctl start nginx # start nginx
+systemctl enable nginx # enable Nginx to start when your system boots
 
 yum install -y unzip
 
-echo "Downloading build agent from http://aspnetci and update the agent name.."
+echo "Downloading build agent from http://aspnetci and updating the properties..."
 cd ~/
-wget http://aspnetci/update/buildAgent.zip
 mkdir TeamCity
-cd TeamCity
-unzip ~/buildAgent.zip
+wget http://aspnetci/update/buildAgent.zip
+unzip buildAgent.zip
 cd bin
 chmod +x agent.sh
-cd ../conf
+cd ~/TeamCity/conf
 cp buildAgent.dist.properties buildAgent.properties
 
 # Set the build agent name and CI server urls
@@ -78,7 +80,7 @@ sed -i "s/name=.*/name=$AGENTNAME/" buildAgent.properties
 sed -i "s#serverUrl=.*#serverUrl=$SERVERURL#g" buildAgent.properties
 
 echo >> buildAgent.properties # append a new line
-echo "system.aspnet.os.name=ubuntu" >> buildAgent.properties
+echo "system.aspnet.os.name=$ASPNETOSNAME" >> buildAgent.properties
 
 cd ~/TeamCity
 
