@@ -78,7 +78,7 @@ sed -i "s/name=.*/name=$AGENTNAME/" buildAgent.properties
 sed -i "s#serverUrl=.*#serverUrl=$SERVERURL#g" buildAgent.properties
 
 echo >> buildAgent.properties # append a new line
-echo "system.aspnet.os.name=centos" >> buildAgent.properties
+echo "system.aspnet.os.name=ubuntu" >> buildAgent.properties
 
 cd ~/TeamCity
 
