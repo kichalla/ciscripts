@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+trap 'exit' ERR
 
 # NOTE: This script must be run with an account having 'sudo' privileges
 
@@ -66,8 +67,8 @@ systemctl enable nginx # enable Nginx to start when your system boots
 yum install -y unzip
 
 echo "Downloading build agent from http://aspnetci and updating the properties..."
-cd ~/
-mkdir TeamCity
+mkdir ~/TeamCity
+cd ~/TeamCity
 wget http://aspnetci/update/buildAgent.zip
 unzip buildAgent.zip
 cd bin
