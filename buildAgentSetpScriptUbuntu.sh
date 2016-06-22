@@ -53,6 +53,10 @@ npm install -g gulp
 echo "Installing TypeScript globally..."
 npm install -g typescript
 
+echo "Installing Nginx..."
+apt-get install -y nginx
+update-rc.d nginx defaults
+
 echo "Downloading build agent from http://aspnetci/ and updating the properties..."
 cd ~/
 wget http://aspnetci/update/buildAgent.zip
