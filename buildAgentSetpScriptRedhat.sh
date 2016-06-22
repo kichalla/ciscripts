@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+# NOTE: This script must be run with an account having 'sudo' privileges
+
+if [ $# -ne 2 ]; then
+    echo "Invalid number of arguments specified."
+    echo "Usage: <script-name> <agent-name> <agent-url>"
+    echo "Examples:"
+    echo "<script-name> 'aspnetci-b01' 'http://aspnetci/'"
+    exit 1
+fi
+
+USER="aspnetagent"
+AGENTNAME=$1
+SERVERURL=$2
+
 yum check-update
 
 echo "Installing Git..."
@@ -55,8 +69,8 @@ cd ../conf
 cp buildAgent.dist.properties buildAgent.properties
 
 # Set the build agent name and CI server urls
-sed -i "s/name=.*/name=$1/" buildAgent.properties
-sed -i "s#serverUrl=.*#serverUrl=$2#g" buildAgent.properties
+sed -i "s/name=.*/name=$AGENTNAME/" buildAgent.properties
+sed -i "s#serverUrl=.*#serverUrl=$SERVERURL#g" buildAgent.properties
 
 echo >> buildAgent.properties # append a new line
 echo "system.aspnet.os.name=centos" >> buildAgent.properties
@@ -65,13 +79,23 @@ cd ~/TeamCity
 
 cat <<EOF >> agentStartStop
 #!/usr/bin/env bash
- 
-case "$1" in
+### BEGIN INIT INFO
+# Provides:          TeamCity build agent
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+USER="aspnetagent"
+
+case "\$1" in
 start)
- sudo ~/TeamCity/bin/agent.sh start
+ su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh start"
 ;;
 stop)
- sudo ~/TeamCity/bin/agent.sh stop
+ su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh stop"
 ;;
 *)
   echo "usage start/stop"
@@ -87,4 +111,4 @@ chmod +x agentStartStop
 cp agentStartStop /etc/init.d/
 sudo chkconfig agentStartStop on
 
-~/TeamCity/bin/agent.sh start
+su $USER -c "~/TeamCity/bin/agent.sh start"
