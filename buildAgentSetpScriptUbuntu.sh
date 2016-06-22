@@ -60,8 +60,8 @@ apt-get install -y nginx
 update-rc.d nginx defaults
 
 echo "Downloading build agent from http://aspnetci/ and updating the properties..."
-cd ~/
-mkdir TeamCity
+mkdir ~/TeamCity
+cd ~/TeamCity
 wget http://aspnetci/update/buildAgent.zip
 unzip buildAgent.zip
 cd bin
