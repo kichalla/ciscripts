@@ -55,6 +55,11 @@ npm install -g gulp
 echo "Installing TypeScript globally..."
 npm install -g typescript
 
+echo "Installing Nginx..."
+yum install -y nginx
+systemctl start nginx #start nginx
+systemctl enable nginx #enable Nginx to start when your system boots
+
 yum install -y unzip
 
 echo "Downloading build agent from http://aspnetci and update the agent name.."
