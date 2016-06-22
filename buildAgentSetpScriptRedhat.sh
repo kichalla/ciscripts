@@ -10,7 +10,6 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-USER="aspnetagent"
 AGENTNAME=$1
 SERVERURL=$2
 
@@ -93,14 +92,12 @@ cat <<EOF >> agentStartStop
 # Short-Description: Start daemon at boot time
 # Description:       Enable service provided by daemon.
 ### END INIT INFO
-USER="aspnetagent"
-
 case "\$1" in
 start)
- su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh start"
+ sudo ~/TeamCity/bin/agent.sh start
 ;;
 stop)
- su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh stop"
+ sudo ~/TeamCity/bin/agent.sh stop
 ;;
 *)
   echo "usage start/stop"
@@ -116,4 +113,4 @@ chmod +x agentStartStop
 cp agentStartStop /etc/init.d/
 sudo chkconfig agentStartStop on
 
-su $USER -c "~/TeamCity/bin/agent.sh start"
+~/TeamCity/bin/agent.sh start

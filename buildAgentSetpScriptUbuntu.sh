@@ -10,7 +10,6 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-USER="aspnetagent"
 AGENTNAME=$1
 SERVERURL=$2
 
@@ -92,10 +91,10 @@ USER="aspnetagent"
 
 case "\$1" in
 start)
- su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh start"
+ sudo ~/TeamCity/bin/agent.sh start
 ;;
 stop)
- su - \$USER -c "cd ~/TeamCity/bin ; ./agent.sh stop"
+ sudo ~/TeamCity/bin/agent.sh stop
 ;;
 *)
   echo "usage start/stop"
@@ -112,4 +111,4 @@ cp agentStartStop /etc/init.d/
 update-rc.d agentStartStop defaults
 
 echo "Starting the build agent..."
-su $USER -c "~/TeamCity/bin/agent.sh start"
+~/TeamCity/bin/agent.sh start
