@@ -75,6 +75,15 @@ cd ~/TeamCity
 
 cat <<EOF >> agentStartStop
 #!/usr/bin/env bash
+### BEGIN INIT INFO
+# Provides:          TeamCity build agent
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
 USER="aspnetagent"
 
 case "\$1" in
@@ -99,4 +108,4 @@ cp agentStartStop /etc/init.d/
 update-rc.d agentStartStop defaults
 
 echo "Starting the build agent..."
-su $USER -c "~/TeamCity/bin/agent.sh start""
+su $USER -c "~/TeamCity/bin/agent.sh start"
