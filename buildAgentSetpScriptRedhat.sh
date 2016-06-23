@@ -48,7 +48,6 @@ yum -y install npm
 
 echo "Installing Bower globally..."
 npm install -g bower
-echo '{ "allow_root": true }' > /root/.bowerrc # workaround for bower install errors when using with sudo
 
 echo "Installing Grunt globally..."
 npm install -g grunt
@@ -69,6 +68,7 @@ yum install -y unzip
 echo "Downloading build agent from http://aspnetci and updating the properties..."
 mkdir ~/TeamCity
 cd ~/TeamCity
+echo '{ "allow_root": true }' > .bowerrc # workaround for bower install errors when using with sudo
 wget http://aspnetci/update/buildAgent.zip
 unzip buildAgent.zip
 cd bin
