@@ -25,11 +25,10 @@ git config --global http.postBuffer 2M
 
 yum install -y epel-release
 
-echo "Installing Mono 4.2.3..."
+echo "Installing Mono 4.4.0..."
 yum install yum-utils
 rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"
-yum-config-manager --add-repo http://download.mono-project.com/repo/centos/
-yum check-update
+yum-config-manager --add-repo http://download.mono-project.com/repo/centos-beta/
 yum install -y mono-complete
 
 echo "Installing libunwind..."
