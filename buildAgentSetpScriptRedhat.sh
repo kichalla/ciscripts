@@ -12,10 +12,19 @@ if [ $# -ne 3 ]; then
 fi
 
 AGENTNAME=$1
-SERVERURL=$2
+SERVERURL=${2%/} # trim the final '/' in the string
 ASPNETOSNAME=$3
 
 yum check-update
+
+echo "Updating dhclient.conf..."
+echo 'supersede domain-name "redmond.corp.microsoft.com";' >> /etc/dhcp/dhclient.conf
+echo 'supersede domain-search "redmond.corp.microsoft.com";' >> /etc/dhcp/dhclient.conf
+echo 'supersede search "redmond.corp.microsoft.com";' >> /etc/dhcp/dhclient.conf
+
+echo "Restarting dhclient..."
+dhclient -r
+dhclient
 
 echo "Installing Git..."
 yum install -y git
@@ -25,10 +34,11 @@ git config --global http.postBuffer 2M
 
 yum install -y epel-release
 
-echo "Installing Mono 4.4.0..."
+echo "Installing Mono 4.2.3..."
 yum install yum-utils
 rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"
-yum-config-manager --add-repo http://download.mono-project.com/repo/centos-beta/
+yum-config-manager --add-repo http://download.mono-project.com/repo/centos/
+yum check-update
 yum install -y mono-complete
 
 echo "Installing libunwind..."
@@ -65,10 +75,10 @@ systemctl enable nginx # enable Nginx to start when your system boots
 
 yum install -y unzip
 
-echo "Downloading build agent from http://aspnetci and updating the properties..."
+echo "Downloading build agent from $SERVERURL and updating the properties..."
 mkdir ~/TeamCity
 cd ~/TeamCity
-wget http://aspnetci/update/buildAgent.zip
+wget $SERVERURL/update/buildAgent.zip
 unzip buildAgent.zip
 cd bin
 chmod +x agent.sh
