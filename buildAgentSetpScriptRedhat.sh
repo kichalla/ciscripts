@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-trap 'exit' ERR
+trap 'exit' ERR # exit as soon as a command fails
 
 # NOTE: This script must be run with an account having 'sudo' privileges
 
