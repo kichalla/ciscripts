@@ -1,17 +1,37 @@
 #!/usr/bin/env bash
 trap 'exit' ERR # exit as soon as a command fails
 
-if [ $# -ne 3 ]; then
-    echo "Invalid number of arguments specified."
-    echo "Usage: <script-name> <agent-name> <agent-url> <aspnet-os-name>"
-    echo "Examples:"
-    echo "<script-name> 'aspnetci-b01' 'http://aspnetci/' 'osx'"
-    exit 1
-fi
+AGENTNAME=$(hostname)
+SERVERURL="http://aspnetci/"
+ASPNETOSNAME="osx"
 
-AGENTNAME=$1
-SERVERURL=${2%/} # trim the final '/' in the string
-ASPNETOSNAME=$3
+while [[ $# > 0 ]]; do
+    case $1 in
+        -a)
+            shift
+            AGENTNAME=$1
+            ;;
+        -url)
+            shift
+            SERVERURL=${1%/} # trim the final '/' in the string
+            ;;
+        -osname)
+            shift
+            ASPNETOSNAME=$1
+            ;;
+        -help)
+            echo "Invalid number of arguments specified."
+            echo "Usage: [-a <agent-name>] [-url <agent-url>] [-osname <aspnet-os-name>]"
+            echo "       -a <agent-name>            The name of the build agent"
+            echo "       -url <agent-url>           The TeamCity server url"
+            echo "       -osname <aspnet-os-name>   The value for build agent property 'aspnet.os.name'"
+            echo ""
+            echo "Examples:"
+            echo "'aspnetci-b01' 'http://aspnetci/' 'osx'"
+            exit 1
+    esac
+    shift
+done
 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -26,10 +46,11 @@ git config --global http.postBuffer 2M
 echo "Installing Mono..."
 brew install mono
 
+echo "Installing icu4c..."
 brew install icu4c
 
+echo "Installing openssl..."
 brew install openssl
-
 brew link --force openssl
 
 echo "Installing Java..."
